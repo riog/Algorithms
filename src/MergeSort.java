@@ -1,38 +1,60 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class MergeSort {
-	int[] mergeSort(int[] a) {
+	public static void main(String[] args) {
+		int[] sort = new int[] { 10, 2, 5, 3, 7, 13, 1, 6 };
+		MergeSort m = new MergeSort();
+		int[] r = m.mergeSort(sort);
+		m.log(r, "R");
 		
-		if(a.length <= 1) {
+	}
+	public int[] mergeSort(int[] a) {
+		if(a.length > 1) {
+			int mid = a.length / 2 ;
+			int[] left = new int[mid];
+			int[] right = new int[a.length - mid];
+			System.arraycopy(a, 0, left, 0, mid);
+			System.arraycopy(a, mid, right, 0, a.length - mid);
+			
+			log(a, ">");
+			
+			return merge( mergeSort( left) , mergeSort(right));
+		} else {
 			return a;
 		}
-		int mid = a.length / 2 ;
-		int[] left = new int[mid];
-		int[] right = new int[a.length - mid];
-		System.arraycopy(a, 0, left, 0, mid - 1);
-		System.arraycopy(a, mid, right, 0, a.length - mid);
-		return merge( mergeSort( left) , mergeSort(right));
 	}
-	int[] merge(int[]left, int[]right) {
-		if(left.length == 0) {
-			return left;
-		}
-		if(right.length == 0) {
+	
+	private int[] merge(int[]left, int[]right) {
+		if( left .length == 0) {
 			return right;
 		}
-		if(left[0] <= right[0]) {
-			int[] m = new int[1 + left.length - 1 + right.length];
-			m[0] = left[0];
-			System.arraycopy(left, 1, m, 1, left.length - 1);
-			return m;
-		} else {
-			int[] m = new int[1 + left.length - 1 + right.length];
-			m[0] = left[0];
-			System.arraycopy(left, 1, m, 1, left.length - 1);
-			return m;
+		if( right .length == 0) {
+			return left;
 		}
+		int[] m = new int[left.length + right.length];
+		if(left[0] <= right[0]) {
+			// m = left[0] ::  merge (left[1...k] , right[0...l])
+			m[0] = left[0];
+			int[] nleft = new int[left.length - 1];
+			System.arraycopy(left, 1, nleft, 0, left.length - 1);
+			int[] merge = merge(nleft, right);
+			System.arraycopy(merge, 0, m, 1, merge.length); 
+		} else {
+			// m = right[0] :: merge( left[0...k] , right[1...l])
+			m[0] = right[0];
+			int[] nright = new int[right.length - 1];
+			System.arraycopy(right,  1, nright, 0, right.length - 1);
+			int[] merge = merge(left,nright);
+			System.arraycopy(merge, 0, m, 1, merge.length);
+		}
+		log(m, "+");
+		return m;
+	}
+	private void log(int[] a, String msg) {
+		System.out.print(msg + " ");
+		for(int i : a) {
+			System.out.print(i + " ");
+		}
+		System.out.println();
 	}
 }
